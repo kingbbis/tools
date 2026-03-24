@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .stopwatch-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .time-display {
+            font-size: 48px;
+            margin: 20px 0;
+            font-weight: bold;
+            font-family: monospace;
+        }
+        .buttons {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #start { background-color: #4CAF50; color: white; }
+        #stop { background-color: #f44336; color: white; }
+        #reset { background-color: #2196F3; color: white; }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .back-home {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 999;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2196F3;
+            color: white;
+            cursor: pointer;
+        }
+        .back-home:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-home" onclick="window.location.href='index.html'">Back to Home</button>
+    <div class="stopwatch-container">
+        <h1>Stopwatch</h1>
+        <div class="time-display" id="display">00:00:00.00</div>
+        <div class="buttons">
+            <button id="start">Start</button>
+            <button id="stop" disabled>Stop</button>
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+
+    <script src="stopwatch.js"></script>
+</body>
+</html>
