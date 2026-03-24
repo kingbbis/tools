@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #eef2f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 340px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .input-group {
+            flex-wrap: wrap;
+        }
+        .input-group label {
+            flex: 1 1 140px;
+            min-width: 120px;
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .input-group input {
+            margin-top: 6px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.2s ease;
+        }
+        button:hover { background-color: #0056b3; }
+        .output {
+            margin-top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+        .error {
+            color: #d32f2f;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .back-home {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 999;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2196F3;
+            color: white;
+            cursor: pointer;
+        }
+        .back-home:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-home" onclick="window.location.href='index.html'">Back to Home</button>
+    <div class="container">
+        <h1>Random Range Picker</h1>
+        <div class="input-group">
+            <label>Min (>= 0)
+                <input id="minValue" type="number" min="0" value="0" />
+            </label>
+            <label>Max
+                <input id="maxValue" type="number" min="0" value="10" />
+            </label>
+        </div>
+        <button id="pickButton">Pick Random Number</button>
+        <div class="output" id="result">0</div>
+        <div class="error" id="errorMsg"></div>
+    </div>
+
+    <script>
+        const minInput = document.getElementById('minValue');
+        const maxInput = document.getElementById('maxValue');
+        const result = document.getElementById('result');
+        const errorMsg = document.getElementById('errorMsg');
+        const pickButton = document.getElementById('pickButton');
+
+        function validateAndFixValues() {
+            let min = Number(minInput.value);
+            let max = Number(maxInput.value);
+
+            if (isNaN(min) || min < 0) {
+                min = 0;
+            }
+            if (isNaN(max) || max < 0) {
+                max = 0;
+            }
+            if (max < min) {
+                max = min;
+            }
+
+            minInput.value = min;
+            maxInput.value = max;
+
+            return { min, max };
+        }
+
+        function pickRandom() {
+            const { min, max } = validateAndFixValues();
+            if (min > max) {
+                errorMsg.textContent = 'Max must be >= Min.';
+                return;
+            }
+            errorMsg.textContent = '';
+
+            const randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
+            result.textContent = randomValue;
+        }
+
+        minInput.addEventListener('input', validateAndFixValues);
+        maxInput.addEventListener('input', validateAndFixValues);
+        pickButton.addEventListener('click', pickRandom);
+
+        // initialize
+        validateAndFixValues();
+        result.textContent = '0';
+    </script>
+</body>
+</html>

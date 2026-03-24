@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tier Ranking Board</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .back-home {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 999;
+            padding: 8px 14px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .back-home:hover {
+            background-color: #0b7dda;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0052a3;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .board {
+            display: flex;
+            gap: 10px;
+        }
+        .tier-column {
+            flex: 1;
+        }
+        .tier {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: stretch;
+        }
+        .tier-label {
+            width: 80px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            position: relative;
+            min-height: 30px;
+        }
+        .tier-content {
+            flex: 1;
+            background-color: #2a2a2a;
+            border-radius: 5px;
+            min-height: 100px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            align-content: flex-start;
+        }
+        .tier-content.drag-over {
+            background-color: #404040;
+            border: 2px solid #0066cc;
+        }
+        .image-item {
+            height: 90px;
+            border-radius: 5px;
+            cursor: move;
+            position: relative;
+            overflow: hidden;
+        }
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .image-item .remove-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .image-item:hover .remove-btn {
+            display: flex;
+        }
+        .upload-zone {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #2a2a2a;
+            border: 2px dashed #0066cc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .upload-zone:hover {
+            background-color: #333;
+        }
+        .tier-delete-btn {
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            font-size: 12px;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: none;
+        }
+        .tier-label:hover .tier-delete-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tier-edit-btn {
+            position: absolute;
+            top: 5px;
+            right: 30px;
+            width: 15px;
+            height: 15px;
+            padding: 0;
+            font-size: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 2px;
+        }
+        .tier-label:hover .tier-edit-btn {
+            display: flex;
+        }        .tier-edit-btn {
+            position: absolute;
+            top: 5px;
+            right: 30px;
+            width: 15px;
+            height: 15px;
+            padding: 0;
+            font-size: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 2px;
+        }
+        .tier-label:hover .tier-edit-btn {
+            display: flex;
+        }        .unranked-section {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #2a2a2a;
+            border-radius: 5px;
+        }
+        .unranked-section h3 {
+            margin-bottom: 10px;
+        }
+        .unranked-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .menu-content {
+            background-color: #2a2a2a;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .menu-content label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .menu-content input {
+            margin-left: 10px;
+        }
+        .menu-content button {
+            margin: 5px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-home" onclick="window.location.href='index.html'">Back to Home</button>
+    <div class="container">
+        <h1>Tier Ranking Board</h1>
+        
+        <div class="controls">
+            <button onclick="uploadImage()">Upload Image</button>
+            <button onclick="addTier()">Add Tier</button>
+            <button onclick="resetBoard()">Reset</button>
+        </div>
+
+        <div class="upload-zone" onclick="uploadImage()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
+            <p>Click or drag images here to upload</p>
+        </div>
+
+        <div class="unranked-section">
+            <h3>Unranked Images</h3>
+            <div class="unranked-images" id="unranked-images"></div>
+        </div>
+
+        <div class="board">
+            <div class="tier-column" id="tier-column"></div>
+        </div>
+    </div>
+
+    <div id="tier-menu" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+        <div class="menu-content">
+            <!-- content will be populated by JS -->
+        </div>
+    </div>
+
+    <input type="file" id="file-input" accept="image/*" multiple onchange="handleFileSelect(event)">
+
+    <script>
+        const DEFAULT_TIERS = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
+        const TIER_COLORS = {
+            'S': '#FF6B6B', 'A': '#FFA94D', 'B': '#FFD93D', 
+            'C': '#6BCB77', 'D': '#4D96FF', 'E': '#9D84B7', 'F': '#808080'
+        };
+        
+        let tiers = [...DEFAULT_TIERS];
+        let unrankedImages = [];
+
+        function initBoard() {
+            const column = document.getElementById('tier-column');
+            column.innerHTML = '';
+            tiers.forEach((tierName, index) => {
+                const tier = createTierElement(tierName, index);
+                column.appendChild(tier);
+            });
+        }
+
+        function createTierElement(tierName, index) {
+            const tier = document.createElement('div');
+            tier.className = 'tier';
+            const tierColor = TIER_COLORS[tierName] || '#555';
+            tier.innerHTML = `
+                <div class="tier-label" style="background-color: ${tierColor}; position: relative;">
+                    <span>${tierName}</span>
+                    <button class="tier-edit-btn" onclick="openTierMenu(${index})">⚙</button>
+                    <button class="tier-delete-btn" onclick="deleteTier(${index})">×</button>
+                </div>
+                <div class="tier-content" ondrop="drop(event, ${index})" ondragover="dragOver(event)" ondragleave="dragLeave(event)" data-tier="${index}"></div>
+            `;
+            return tier;
+        }
+
+        function updateTierName(index, newName) {
+            if (newName.trim()) {
+                const oldName = tiers[index];
+                tiers[index] = newName.trim();
+                if (TIER_COLORS[oldName] && !TIER_COLORS[newName]) {
+                    TIER_COLORS[newName] = TIER_COLORS[oldName];
+                    delete TIER_COLORS[oldName];
+                }
+            }
+        }
+
+        function changeTierColor(index, color) {
+            const tierName = tiers[index];
+            TIER_COLORS[tierName] = color;
+            const label = document.querySelectorAll('.tier-label')[index];
+            label.style.backgroundColor = color;
+        }
+
+        function deleteTier(index) {
+            if (tiers.length > 1) {
+                tiers.splice(index, 1);
+                initBoard();
+            }
+        }
+
+        function moveTier(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex >= 0 && newIndex < tiers.length) {
+                [tiers[index], tiers[newIndex]] = [tiers[newIndex], tiers[index]];
+                initBoard();
+            }
+        }
+
+        function addTier() {
+            tiers.push('New');
+            initBoard();
+        }
+
+        function uploadImage() {
+            document.getElementById('file-input').click();
+        }
+
+        function handleFileSelect(event) {
+            Array.from(event.target.files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        unrankedImages.push(e.target.result);
+                        renderUnrankedImages();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            event.target.value = '';
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            Array.from(event.dataTransfer.files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        unrankedImages.push(e.target.result);
+                        renderUnrankedImages();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy';
+        }
+
+        function renderUnrankedImages() {
+            const container = document.getElementById('unranked-images');
+            container.innerHTML = '';
+            unrankedImages.forEach((img, index) => {
+                const item = document.createElement('div');
+                item.className = 'image-item';
+                item.draggable = true;
+                item.innerHTML = `
+                    <img src="${img}" draggable="false">
+                    <button class="remove-btn" onclick="removeUnrankedImage(${index})">×</button>
+                `;
+                item.ondragstart = (e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('source', 'unranked');
+                    e.dataTransfer.setData('index', index);
+                };
+                container.appendChild(item);
+            });
+        }
+
+        function removeUnrankedImage(index) {
+            unrankedImages.splice(index, 1);
+            renderUnrankedImages();
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function dragLeave(event) {
+            event.currentTarget.classList.remove('drag-over');
+        }
+
+        function drop(event, tierIndex) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('drag-over');
+            
+            const source = event.dataTransfer.getData('source');
+            const index = parseInt(event.dataTransfer.getData('index'));
+            
+            if (source === 'unranked') {
+                const img = unrankedImages[index];
+                unrankedImages.splice(index, 1);
+                addImageToTier(tierIndex, img);
+                renderUnrankedImages();
+            }
+        }
+
+        function addImageToTier(tierIndex, imgData) {
+            const tierContent = document.querySelector(`[data-tier="${tierIndex}"]`);
+            const item = document.createElement('div');
+            item.className = 'image-item';
+            item.draggable = true;
+            item.innerHTML = `
+                <img src="${imgData}" draggable="false">
+                <button class="remove-btn" onclick="removeFromTier(this)">×</button>
+            `;
+            item.ondragstart = (e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('source', 'tier');
+            };
+            tierContent.appendChild(item);
+        }
+
+        function removeFromTier(btn) {
+            const item = btn.parentElement;
+            unrankedImages.push(item.querySelector('img').src);
+            item.remove();
+            renderUnrankedImages();
+        }
+
+        function resetBoard() {
+            if (confirm('Reset the board?')) {
+                tiers = [...DEFAULT_TIERS];
+                unrankedImages = [];
+                initBoard();
+                renderUnrankedImages();
+            }
+        }
+
+        function openTierMenu(index) {
+            const menu = document.getElementById('tier-menu');
+            const tierName = tiers[index];
+            const tierColor = TIER_COLORS[tierName] || '#555';
+            menu.innerHTML = `
+                <div class="menu-content">
+                    <label>Name: <input type="text" id="menu-name" value="${tierName}" maxlength="10"></label>
+                    <label>Color: <input type="color" id="menu-color" value="${tierColor}"></label><br>
+                    <button onclick="moveTier(${index}, -1); closeTierMenu();">Move Up</button>
+                    <button onclick="moveTier(${index}, 1); closeTierMenu();">Move Down</button><br>
+                    <button onclick="saveTierMenu(${index})">Save</button>
+                    <button onclick="closeTierMenu()">Cancel</button>
+                </div>
+            `;
+            menu.style.display = 'block';
+        }
+
+        function saveTierMenu(index) {
+            const newName = document.getElementById('menu-name').value.trim();
+            const newColor = document.getElementById('menu-color').value;
+            if (newName) {
+                updateTierName(index, newName);
+                changeTierColor(index, newColor);
+                initBoard(); // to update the display
+            }
+            closeTierMenu();
+        }
+
+        function closeTierMenu() {
+            document.getElementById('tier-menu').style.display = 'none';
+        }
+
+        initBoard();
+        renderUnrankedImages();
+    </script>
+</body>
+</html>

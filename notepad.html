@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Notepad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #toolbar {
+            margin-bottom: 10px;
+        }
+        #editor {
+            border: 1px solid #ccc;
+            min-height: 400px;
+            padding: 10px;
+            outline: none;
+        }
+        button {
+            margin: 2px;
+            padding: 5px 10px;
+        }
+        select {
+            margin: 2px;
+            padding: 5px;
+        }
+        input[type="color"] {
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Online Notepad</h1>
+    <div id="toolbar">
+        <select id="fontSize">
+            <option value="2">12px</option>
+            <option value="3">14px</option>
+            <option value="4">16px</option>
+            <option value="5">18px</option>
+            <option value="6">20px</option>
+            <option value="7">24px</option>
+        </select>
+        <select id="fontFamily">
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+        </select>
+        <input type="color" id="textColor" title="Text Color">
+        <input type="color" id="highlightColor" title="Highlight Color">
+        <button id="boldBtn">Bold</button>
+        <button id="italicBtn">Italic</button>
+        <button id="underlineBtn">Underline</button>
+        <button id="alignLeft">Align Left</button>
+        <button id="alignCenter">Align Center</button>
+        <button id="alignRight">Align Right</button>
+        <button id="exportTxt">Export as .txt</button>
+        <button id="exportPdf">Export as .pdf</button>
+    </div>
+    <div id="editor" contenteditable="true"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="notepad.js"></script>
+</body>
+</html>
